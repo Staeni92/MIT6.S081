@@ -1,4 +1,5 @@
 #include "kernel/types.h"
+#include "kernel/stat.h"
 #include "user/user.h"
 
 #define RD 0
@@ -21,9 +22,11 @@ int main(int argc, char const *argv[]) {
         close(p2c[RD]);
         if (write(p2c[WR], &buf, sizeof(char)) != sizeof(char)) {
             printf("parent write() error\n");
+            exit(1);
         }
         if (read(c2p[RD], &buf, sizeof(char)) != sizeof(char)) {
             printf("parent read() error\n");
+            exit(1);
         } else {
             printf("%d: received pong\n", getpid());
         }
@@ -35,12 +38,14 @@ int main(int argc, char const *argv[]) {
         close(c2p[RD]);
         if (read(p2c[RD], &buf, sizeof(char)) != sizeof(char)) {
             printf("child read() error\n");
+            exit(1);
         } else {
             printf("%d: received ping\n", getpid());
         }
 
         if (write(c2p[WR], &buf, sizeof(char)) != sizeof(char)) {
             printf("child write() error\n");
+            exit(1);
         }
         close(c2p[WR]);
         close(p2c[RD]);
